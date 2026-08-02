@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geopolitical Terminal - Tag Index</title>
+  <style>
+    :root {
+      --ink: #111827;
+      --muted: #5f6b7a;
+      --line: #c8d3e3;
+      --blue: #2f63b7;
+      --blue-dark: #214a89;
+      --blue-soft: #eaf1ff;
+      --surface: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #eef3f9;
+      font-family: Arial, Helvetica, sans-serif;
+      letter-spacing: 0;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    input {
+      font: inherit;
+    }
+
+    .terminal {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      background: var(--surface);
+    }
+
+    .top-nav,
+    .topic-nav {
+      display: flex;
+      justify-content: center;
+      overflow-x: auto;
+      background: #fbfdff;
+      border-top: 1px solid var(--blue);
+      border-bottom: 1px solid var(--blue);
+      scrollbar-width: thin;
+    }
+
+    .top-nav a,
+    .topic-nav a {
+      white-space: nowrap;
+      border-left: 1px solid transparent;
+      border-right: 1px solid transparent;
+    }
+
+    .top-nav a {
+      padding: 7px 34px;
+      font-size: 20px;
+    }
+
+    .topic-nav a {
+      padding: 7px 38px;
+      font-size: 20px;
+    }
+
+    .top-nav a:hover,
+    .topic-nav a:hover,
+    .top-nav a.active,
+    .topic-nav a.active {
+      color: var(--blue-dark);
+      background: var(--blue-soft);
+      border-color: #a8bee5;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 248px minmax(520px, 1fr) 226px;
+      min-height: 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .left-rail {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      overflow: hidden;
+      color: #ffffff;
+      background: var(--blue);
+      border-right: 1px solid #183c72;
+    }
+
+    .rail-title {
+      display: block;
+      margin: 0;
+      padding: 8px 16px 16px;
+      color: #ffffff;
+      text-align: center;
+      font-size: 21px;
+      font-weight: 700;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+    }
+
+    .live-list {
+      list-style: none;
+      margin: 0;
+      min-height: 0;
+      padding: 0 0 16px;
+      overflow-y: auto;
+      scrollbar-color: rgba(255, 255, 255, 0.6) rgba(20, 55, 106, 0.45);
+      scrollbar-width: thin;
+    }
+
+    .live-list a {
+      display: grid;
+      grid-template-columns: 17px 1fr;
+      gap: 10px;
+      padding: 7px 16px;
+      color: #ffffff;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .live-list a:hover,
+    .rail-title:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      margin-top: 8px;
+      border-radius: 999px;
+      background: #ffffff;
+    }
+
+    .live-meta {
+      display: block;
+      margin-top: 4px;
+      color: #d8e6ff;
+      font-size: 12px;
+    }
+
+    main {
+      padding: 28px 42px 40px;
+      background: #ffffff;
+    }
+
+    .tag-header {
+      max-width: 760px;
+      margin: 0 auto 24px;
+    }
+
+    .tag-header p {
+      margin: 0 0 5px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .tag-header h1 {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1.15;
+    }
+
+    .result-list {
+      display: grid;
+      gap: 14px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .result-card {
+      display: grid;
+      grid-template-columns: 1fr 128px;
+      min-height: 86px;
+      border: 1px solid var(--line);
+      background: #ffffff;
+    }
+
+    .result-card:hover {
+      outline: 2px solid #9eb8e8;
+      outline-offset: 2px;
+    }
+
+    .result-copy {
+      padding: 10px 12px;
+    }
+
+    .result-copy h2 {
+      margin: 0 0 8px;
+      font-size: 20px;
+      line-height: 1.22;
+      font-weight: 400;
+    }
+
+    .result-copy p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .result-photo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 700;
+      background: var(--blue);
+      border-left: 1px solid var(--blue-dark);
+    }
+
+    .right-rail {
+      display: grid;
+      grid-template-rows: auto 230px 94px 63px 129px 1fr;
+      gap: 8px;
+      padding-bottom: 26px;
+      border-left: 1px solid #2f57a0;
+      background: #f7faff;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      height: 36px;
+      padding: 0 8px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .search-box input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      color: var(--ink);
+      background: transparent;
+      font-size: 19px;
+    }
+
+    .rail-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 12px;
+      color: #ffffff;
+      text-align: center;
+      background: var(--blue);
+      border-top: 1px solid #214a89;
+      border-bottom: 1px solid #214a89;
+    }
+
+    .rail-panel h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .rail-panel h2 a {
+      color: #ffffff;
+      text-decoration: none;
+    }
+
+    .rail-panel p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .analysis-list {
+      display: grid;
+      gap: 7px;
+      text-align: left;
+    }
+
+    .analysis-link {
+      display: block;
+      padding: 6px 7px;
+      color: #ffffff;
+      text-decoration: none;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .analysis-link:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .analysis-link strong,
+    .analysis-link time {
+      display: block;
+    }
+
+    .analysis-link strong {
+      font-size: 13px;
+      line-height: 1.2;
+    }
+
+    .analysis-link time {
+      margin-top: 3px;
+      color: #d8e6ff;
+      font-size: 11px;
+    }
+
+    .metric {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 3px 0;
+      font-size: 13px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.24);
+    }
+
+    .up {
+      color: #d9fff1;
+    }
+
+    .down {
+      color: #ffe0e0;
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 200px 1fr;
+      }
+
+      .right-rail {
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: auto;
+        border-left: 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .search-box {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .left-rail {
+        position: static;
+        height: auto;
+        max-height: 360px;
+      }
+
+      .top-nav,
+      .topic-nav {
+        justify-content: flex-start;
+      }
+
+      .top-nav a,
+      .topic-nav a {
+        padding-left: 18px;
+        padding-right: 18px;
+        font-size: 18px;
+      }
+
+      .live-list {
+        display: block;
+      }
+
+      main {
+        padding: 22px 14px 30px;
+      }
+
+      .result-card {
+        grid-template-columns: 1fr;
+      }
+
+      .result-photo {
+        min-height: 74px;
+        border-left: 0;
+        border-top: 1px solid var(--blue-dark);
+      }
+
+      .right-rail {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="terminal">
+    <nav class="top-nav" aria-label="Regions">
+      <a href="file:///C:/Users/no/Documents/Codex/2026-07-13/i/outputs/geopolitical-terminal.html">Home</a>
+      <a class="active" href="europe-section.html">Europe</a>
+      <a href="americas-section.html">Americas</a>
+      <a href="central-asia-section.html">Central Asia</a>
+      <a href="mena-section.html">MENA</a>
+      <a href="africa-section.html">Africa</a>
+      <a href="south-east-asia-section.html">South/East Asia</a>
+    </nav>
+
+    <nav class="topic-nav" aria-label="Active dossiers">
+      <a href="war-ukraine-section.html">War in Ukraine</a>
+      <a href="war-iran-section.html">War with Iran</a>
+      <a href="energy-security-section.html">Energy Security</a>
+    </nav>
+
+    <div class="layout">
+      <aside class="left-rail" aria-label="Live news">
+        <a class="rail-title" href="news-section.html">News</a>
+        <ul class="live-list">
+          <li><a href="geopolitical-article.html"><span class="live-dot"></span><span>EU envoys debate Ukraine air defense package<span class="live-meta">12 min ago - Brussels</span></span></a></li>
+          <li><a href="geopolitical-article.html"><span class="live-dot"></span><span>Red Sea insurers widen risk premium after strike<span class="live-meta">24 min ago - Maritime</span></span></a></li>
+          <li><a href="geopolitical-article.html"><span class="live-dot"></span><span>Sahel bloc announces joint border command<span class="live-meta">41 min ago - West Africa</span></span></a></li>
+          <li><a href="geopolitical-article.html"><span class="live-dot"></span><span>China and ASEAN resume code-of-conduct talks<span class="live-meta">58 min ago - South China Sea</span></span></a></li>
+          <li><a href="geopolitical-article.html"><span class="live-dot"></span><span>EU defense ministers weigh joint ammunition financing<span class="live-meta">1 hr ago - Europe</span></span></a></li>
+          <li><a href="geopolitical-article.html"><span class="live-dot"></span><span>Gulf producers reassess shipping-risk exposure<span class="live-meta">1 hr ago - MENA</span></span></a></li>
+          <li><a href="geopolitical-article.html"><span class="live-dot"></span><span>Poland expands border surveillance after drone incidents<span class="live-meta">2 hr ago - Europe</span></span></a></li>
+          <li><a href="geopolitical-article.html"><span class="live-dot"></span><span>Gas storage outlook improves but winter risks remain<span class="live-meta">2 hr ago - Energy</span></span></a></li>
+          <li><a href="geopolitical-article.html"><span class="live-dot"></span><span>African Union mediation team returns to ceasefire talks<span class="live-meta">3 hr ago - Africa</span></span></a></li>
+          <li><a href="geopolitical-article.html"><span class="live-dot"></span><span>ASEAN envoys discuss South China Sea code of conduct<span class="live-meta">3 hr ago - Asia</span></span></a></li>
+        </ul>
+      </aside>
+
+      <main>
+        <header class="tag-header">
+          <p>Tag index</p>
+          <h1>#Gulf</h1>
+        </header>
+
+        <section class="result-list" aria-label="News with this tag">
+          <a class="result-card" href="geopolitical-article.html">
+            <div class="result-copy">
+              <h2>European officials prepare new Ukraine air defense package</h2>
+              <p>3 hours ago - Europe - War in Ukraine</p>
+            </div>
+            <div class="result-photo">Photo</div>
+          </a>
+          <a class="result-card" href="geopolitical-article.html">
+            <div class="result-copy">
+              <h2>Gas storage levels reshape winter leverage in Europe</h2>
+              <p>5 hours ago - Europe - Energy Security</p>
+            </div>
+            <div class="result-photo">Photo</div>
+          </a>
+          <a class="result-card" href="geopolitical-article.html">
+            <div class="result-copy">
+              <h2>Gulf producers reassess risk after shipping premium jump</h2>
+              <p>7 hours ago - MENA - Energy Security</p>
+            </div>
+            <div class="result-photo">Photo</div>
+          </a>
+        </section>
+      </main>
+
+      <aside class="right-rail" aria-label="Tools and analysis">
+        <form class="search-box" role="search">
+          <input type="search" aria-label="Search" placeholder="Search">
+        </form>
+
+        <section class="rail-panel">
+          <h2><a href="analysis-section.html">Last analysis</a></h2>
+          <div class="analysis-list">
+            <a class="analysis-link" href="geopolitical-analysis.html"><strong>Europe's Ukraine air defense debate shifts to capacity</strong><time datetime="2026-07-21">Jul 21, 2026</time></a>
+            <a class="analysis-link" href="geopolitical-analysis.html"><strong>Gulf risk premiums are becoming a policy signal</strong><time datetime="2026-07-20">Jul 20, 2026</time></a>
+            <a class="analysis-link" href="geopolitical-analysis.html"><strong>Energy security is returning to Europe's winter agenda</strong><time datetime="2026-07-19">Jul 19, 2026</time></a>
+          </div>
+        </section>
+
+        <section class="rail-panel">
+          <h2>AI Assistant</h2>
+          <p>Ask for a summary, source check, timeline, or key actors in this story.</p>
+        </section>
+
+        <section class="rail-panel">
+          <h2>Op-ed?</h2>
+          <p>Other items: podcasts, long reads, interviews</p>
+        </section>
+
+        <section class="rail-panel">
+          <h2>Economic, financial or political indicators / barometers</h2>
+          <div class="metric"><span>Oil risk</span><strong class="up">+2.4</strong></div>
+          <div class="metric"><span>Food security</span><strong class="down">-0.8</strong></div>
+          <div class="metric"><span>Migration pressure</span><strong class="up">+1.1</strong></div>
+        </section>
+      </aside>
+    </div>
+  </div>
+</body>
+</html>

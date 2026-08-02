@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geopolitical Terminal - Africa</title>
+  <style>
+    :root {
+      --ink: #111827;
+      --muted: #5f6b7a;
+      --line: #c8d3e3;
+      --panel: #f8fafc;
+      --surface: #ffffff;
+      --blue: #2f63b7;
+      --blue-dark: #214a89;
+      --blue-soft: #eaf1ff;
+      --amber: #c07422;
+      --green: #28765b;
+      --red: #b84242;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #eef3f9;
+      font-family: Arial, Helvetica, sans-serif;
+      letter-spacing: 0;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .terminal {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      background: var(--surface);
+    }
+
+    .top-nav,
+    .topic-nav {
+      display: flex;
+      justify-content: center;
+      border-top: 1px solid var(--blue);
+      border-bottom: 1px solid var(--blue);
+      background: #fbfdff;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+
+    .top-nav a,
+    .topic-nav a {
+      color: #0b1220;
+      text-decoration: none;
+      white-space: nowrap;
+      border-left: 1px solid transparent;
+      border-right: 1px solid transparent;
+    }
+
+    .top-nav a {
+      padding: 7px 34px;
+      font-size: 20px;
+    }
+
+    .topic-nav a {
+      padding: 7px 38px;
+      font-size: 20px;
+    }
+
+    .top-nav a:hover,
+    .topic-nav a:hover,
+    .top-nav a.active,
+    .topic-nav a.active {
+      background: var(--blue-soft);
+      color: var(--blue-dark);
+      border-color: #a8bee5;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 248px minmax(520px, 1fr) 226px;
+      min-height: 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .left-rail {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      overflow: hidden;
+      background: var(--blue);
+      color: #ffffff;
+      border-right: 1px solid #183c72;
+    }
+
+    .rail-title {
+      display: block;
+      margin: 0;
+      padding: 8px 16px 16px;
+      color: #ffffff;
+      text-align: center;
+      font-size: 21px;
+      font-weight: 700;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+    }
+
+    .live-list {
+      list-style: none;
+      margin: 0;
+      min-height: 0;
+      padding: 0 0 16px;
+      overflow-y: auto;
+      scrollbar-color: rgba(255, 255, 255, 0.6) rgba(20, 55, 106, 0.45);
+      scrollbar-width: thin;
+    }
+
+    .live-list a {
+      display: grid;
+      grid-template-columns: 17px 1fr;
+      gap: 10px;
+      align-items: start;
+      padding: 7px 16px;
+      color: #ffffff;
+      font-size: 18px;
+      line-height: 1.2;
+      text-decoration: none;
+    }
+
+    .live-list a:hover,
+    .rail-title:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      margin-top: 8px;
+      border-radius: 999px;
+      background: #ffffff;
+    }
+
+    .live-meta {
+      display: block;
+      margin-top: 4px;
+      color: #d8e6ff;
+      font-size: 12px;
+    }
+
+    main {
+      padding: 0 22px 26px;
+      background: var(--surface);
+    }
+
+    .section-title {
+      margin: 5px 0 6px;
+      text-align: center;
+      font-size: 21px;
+      font-weight: 400;
+    }
+
+    .lead-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(150px, 1fr));
+      gap: 20px;
+      margin: 0 0 22px;
+    }
+
+    .lead-card {
+      min-height: 139px;
+      display: flex;
+      align-items: end;
+      padding: 14px;
+      color: #ffffff;
+      text-decoration: none;
+      background:
+        linear-gradient(180deg, rgba(16, 28, 48, 0.12), rgba(16, 28, 48, 0.78)),
+        var(--bg);
+      background-position: center;
+      background-size: cover;
+      border: 1px solid #214a89;
+    }
+
+    .lead-card strong {
+      display: block;
+      max-width: 18ch;
+      font-size: 20px;
+      line-height: 1.2;
+    }
+
+    .kicker {
+      display: block;
+      margin-bottom: 5px;
+      color: #dbe9ff;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .subhead {
+      margin: 8px 0 5px 9px;
+      font-size: 21px;
+      font-weight: 400;
+    }
+
+    .important-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 28px clamp(14px, 3vw, 33px);
+      margin: 0 clamp(0px, 3vw, 28px) 58px clamp(0px, 4vw, 39px);
+    }
+
+    .mini-card {
+      display: block;
+      min-width: 0;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .mini-card:hover,
+    .lead-card:hover,
+    .source-tile:hover {
+      outline: 2px solid #9eb8e8;
+      outline-offset: 2px;
+    }
+
+    .mini-image {
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px;
+      color: #ffffff;
+      text-align: center;
+      font-size: 18px;
+      line-height: 1.25;
+      background:
+        linear-gradient(180deg, rgba(28, 62, 114, 0.08), rgba(28, 62, 114, 0.42)),
+        var(--bg);
+      background-position: center;
+      background-size: cover;
+      border: 1px solid #214a89;
+    }
+
+    .mini-card h3 {
+      margin: 16px 8px 0;
+      font-size: 20px;
+      line-height: 1.3;
+      font-weight: 400;
+    }
+
+    .web-title {
+      margin: 0 0 18px 27px;
+      font-size: 18px;
+      font-weight: 400;
+    }
+
+    .web-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: clamp(14px, 3.5vw, 40px);
+      margin: 0 clamp(0px, 3vw, 28px);
+    }
+
+    .section-header {
+      margin: 12px auto 20px;
+      max-width: 760px;
+      text-align: left;
+    }
+
+    .section-header h1 {
+      margin: 0 0 6px;
+      font-size: 32px;
+      line-height: 1.1;
+      font-weight: 700;
+    }
+
+    .section-header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .section-columns {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(260px, 1fr));
+      gap: 34px;
+      max-width: 760px;
+      margin: 0 auto 28px;
+    }
+
+    .section-column h2 {
+      margin: 0 0 14px;
+      padding: 6px 8px;
+      font-size: 21px;
+      line-height: 1.2;
+      font-weight: 400;
+      border: 1px solid var(--blue);
+      background: #ffffff;
+    }
+
+    .section-feed {
+      display: grid;
+      gap: 14px;
+    }
+
+    .section-card {
+      display: grid;
+      grid-template-columns: 1fr 110px;
+      min-height: 82px;
+      color: inherit;
+      text-decoration: none;
+      background: #ffffff;
+      border: 1px solid var(--line);
+    }
+
+    .section-card:hover {
+      outline: 2px solid #9eb8e8;
+      outline-offset: 2px;
+    }
+
+    .section-card-copy {
+      padding: 10px 12px;
+    }
+
+    .section-card-copy h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      line-height: 1.22;
+      font-weight: 400;
+    }
+
+    .section-card-copy p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.25;
+    }
+
+    .section-card-photo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 17px;
+      font-weight: 700;
+      background: var(--blue);
+      border-left: 1px solid var(--blue-dark);
+    }
+
+    .extra-item,
+    .more-batch {
+      display: none;
+    }
+
+    .view-more-wrap {
+      max-width: 760px;
+      margin: 0 auto 30px;
+      text-align: center;
+    }
+
+    .view-more-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 174px;
+      padding: 7px 18px;
+      color: var(--ink);
+      font-size: 20px;
+      text-decoration: none;
+      background: #ffffff;
+      border: 1px solid var(--blue);
+      cursor: pointer;
+    }
+
+    .view-more-button:hover {
+      background: var(--blue-soft);
+    }
+
+    .source-tile {
+      display: block;
+      min-height: 69px;
+      padding: 8px;
+      color: #ffffff;
+      text-align: center;
+      text-decoration: none;
+      background: var(--blue);
+      border: 1px solid #214a89;
+    }
+
+    .source-tile strong {
+      display: block;
+      font-size: 18px;
+      line-height: 1.1;
+      font-weight: 700;
+    }
+
+    .source-tile span {
+      display: block;
+      margin-top: 4px;
+      font-size: 12px;
+    }
+
+    .right-rail {
+      display: grid;
+      grid-template-rows: auto 230px 94px 63px 129px 1fr;
+      gap: 8px;
+      padding-bottom: 26px;
+      border-left: 1px solid #2f57a0;
+      background: #f7faff;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      height: 36px;
+      padding: 0 8px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .search-box input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      color: var(--ink);
+      background: transparent;
+      font-size: 19px;
+    }
+
+    .rail-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 12px;
+      color: #ffffff;
+      text-align: center;
+      background: var(--blue);
+      border-top: 1px solid #214a89;
+      border-bottom: 1px solid #214a89;
+    }
+
+    .rail-panel h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .rail-panel h2 a {
+      color: #ffffff;
+      text-decoration: none;
+    }
+
+    .rail-panel p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .analysis-list {
+      display: grid;
+      gap: 7px;
+      text-align: left;
+    }
+
+    .analysis-link {
+      display: block;
+      padding: 6px 7px;
+      color: #ffffff;
+      text-decoration: none;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .analysis-link:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .analysis-link strong,
+    .analysis-link time {
+      display: block;
+    }
+
+    .analysis-link strong {
+      font-size: 13px;
+      line-height: 1.2;
+    }
+
+    .analysis-link time {
+      margin-top: 3px;
+      color: #d8e6ff;
+      font-size: 11px;
+    }
+
+    .metric {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 3px 0;
+      font-size: 13px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.24);
+    }
+
+    .metric:last-child {
+      border-bottom: 0;
+    }
+
+    .up {
+      color: #d9fff1;
+    }
+
+    .down {
+      color: #ffe0e0;
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 200px 1fr;
+      }
+
+      .right-rail {
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: auto;
+        border-left: 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .search-box {
+        grid-column: 1 / -1;
+      }
+
+      .lead-grid,
+      .section-columns {
+        grid-template-columns: 1fr;
+      }
+
+      .important-grid,
+      .web-grid {
+        grid-template-columns: repeat(2, minmax(140px, 1fr));
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .left-rail {
+        position: static;
+        height: auto;
+        max-height: 360px;
+        border-right: 0;
+      }
+
+      .live-list {
+        display: block;
+      }
+
+      main {
+        padding: 0 14px 22px;
+      }
+
+      .top-nav,
+      .topic-nav {
+        justify-content: flex-start;
+      }
+
+      .top-nav a,
+      .topic-nav a {
+        padding-left: 18px;
+        padding-right: 18px;
+        font-size: 18px;
+      }
+
+      .important-grid,
+      .web-grid,
+      .section-columns,
+      .right-rail {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .section-card {
+        grid-template-columns: 1fr;
+      }
+
+      .section-card-photo {
+        min-height: 70px;
+        border-left: 0;
+        border-top: 1px solid var(--blue-dark);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="terminal">
+    <nav class="top-nav" aria-label="Regions">
+      <a href="file:///C:/Users/no/Documents/Codex/2026-07-13/i/outputs/geopolitical-terminal.html">Home</a>
+      <a href="europe-section.html">Europe</a>
+      <a href="americas-section.html">Americas</a>
+      <a href="central-asia-section.html">Central Asia</a>
+      <a href="mena-section.html">MENA</a>
+      <a class="active" href="africa-section.html">Africa</a>
+      <a href="south-east-asia-section.html">South/East Asia</a>
+    </nav>
+
+    <nav class="topic-nav" aria-label="Active dossiers">
+      <a href="war-ukraine-section.html">War in Ukraine</a>
+      <a href="war-iran-section.html">War with Iran</a>
+      <a href="energy-security-section.html">Energy Security</a>
+    </nav>
+
+    <div class="layout">
+      <aside class="left-rail" aria-label="Live news">
+        <a class="rail-title" href="news-section.html">News</a>
+        <ul class="live-list">
+          <li><a href="geopolitical-article.html"><span class="live-dot"></span><span>AU mediation team returns to Sudan ceasefire talks<span class="live-meta">12 min ago · Brussels</span></span></a></li>
+          <li><a href="geopolitical-article.html"><span class="live-dot"></span><span>Red Sea insurers widen risk premium after strike<span class="live-meta">24 min ago · Maritime</span></span></a></li>
+          <li><a href="geopolitical-article.html"><span class="live-dot"></span><span>Sahel bloc announces joint border command<span class="live-meta">41 min ago · West Africa</span></span></a></li>
+          <li><a href="geopolitical-article.html"><span class="live-dot"></span><span>China and ASEAN resume code-of-conduct talks<span class="live-meta">58 min ago · South China Sea</span></span></a></li>
+          <li><a href="geopolitical-article.html"><span class="live-dot"></span><span>Nigeria reviews fuel-security measures after refinery delays<span class="live-meta">1 hr ago · Europe</span></span></a></li>
+          <li><a href="geopolitical-article.html"><span class="live-dot"></span><span>Gulf producers reassess shipping-risk exposure<span class="live-meta">1 hr ago · MENA</span></span></a></li>
+          <li><a href="geopolitical-article.html"><span class="live-dot"></span><span>Sahel bloc announces joint border command<span class="live-meta">2 hr ago · Europe</span></span></a></li>
+          <li><a href="geopolitical-article.html"><span class="live-dot"></span><span>Kenya hosts Horn of Africa food-security meeting<span class="live-meta">2 hr ago · Energy</span></span></a></li>
+          <li><a href="geopolitical-article.html"><span class="live-dot"></span><span>African Union mediation team returns to ceasefire talks<span class="live-meta">3 hr ago · Africa</span></span></a></li>
+          <li><a href="geopolitical-article.html"><span class="live-dot"></span><span>ASEAN envoys discuss South China Sea code of conduct<span class="live-meta">3 hr ago · Asia</span></span></a></li>
+        </ul>
+      </aside>
+
+      <main>
+        <header class="section-header">
+          <h1>Africa</h1>
+          <p>Latest news and analysis from the African geopolitical desk.</p>
+        </header>
+
+        <div class="section-columns">
+          <section class="section-column" aria-label="Africa news">
+            <h2>News</h2>
+            <div class="section-feed">
+              <a class="section-card" href="geopolitical-article.html">
+                <div class="section-card-copy">
+                  <h3>AU mediation team returns to Sudan ceasefire talks</h3>
+                  <p>12 min ago - News - War in Ukraine</p>
+                </div>
+                <div class="section-card-photo">Photo</div>
+              </a>
+              <a class="section-card" href="geopolitical-article.html">
+                <div class="section-card-copy">
+                  <h3>Sahel bloc announces joint border command</h3>
+                  <p>46 min ago - News - Security</p>
+                </div>
+                <div class="section-card-photo">Photo</div>
+              </a>
+              <a class="section-card" href="geopolitical-article.html">
+                <div class="section-card-copy">
+                  <h3>Kenya hosts Horn of Africa food-security meeting</h3>
+                  <p>1 hr ago - News - Energy Security</p>
+                </div>
+                <div class="section-card-photo">Photo</div>
+              </a>
+              <a class="section-card" href="geopolitical-article.html">
+                <div class="section-card-copy">
+                  <h3>Nigeria reviews fuel-security measures after refinery delays</h3>
+                  <p>2 hr ago - News - Defense</p>
+                </div>
+                <div class="section-card-photo">Photo</div>
+              </a>
+              <a class="section-card extra-item more-batch-1" href="geopolitical-article.html">
+                <div class="section-card-copy">
+                  <h3>DR Congo peace envoys meet ahead of regional summit</h3>
+                  <p>3 hr ago - News - Infrastructure</p>
+                </div>
+                <div class="section-card-photo">Photo</div>
+              </a>
+              <a class="section-card extra-item more-batch-1" href="geopolitical-article.html">
+                <div class="section-card-copy">
+                  <h3>South Africa calls for new critical-minerals financing pact</h3>
+                  <p>4 hr ago - News - Cybersecurity</p>
+                </div>
+                <div class="section-card-photo">Photo</div>
+              </a>
+              <a class="section-card more-batch more-batch-2" href="geopolitical-article.html">
+                <div class="section-card-copy">
+                  <h3>Germany opens consultations on expanded civil-defense reserve</h3>
+                  <p>5 hr ago - News - Resilience</p>
+                </div>
+                <div class="section-card-photo">Photo</div>
+              </a>
+              <a class="section-card more-batch more-batch-2" href="geopolitical-article.html">
+                <div class="section-card-copy">
+                  <h3>EU diplomats prepare new sanctions enforcement package</h3>
+                  <p>6 hr ago - News - Economic Security</p>
+                </div>
+                <div class="section-card-photo">Photo</div>
+              </a>
+            </div>
+          </section>
+
+          <section class="section-column" aria-label="Africa analysis">
+            <h2>Analysis</h2>
+            <div class="section-feed">
+              <a class="section-card" href="geopolitical-analysis.html">
+                <div class="section-card-copy">
+                  <h3>Sudan mediation is narrowing around humanitarian access</h3>
+                  <p>Jul 21, 2026 - Analysis - War in Ukraine</p>
+                </div>
+                <div class="section-card-photo">Photo</div>
+              </a>
+              <a class="section-card" href="geopolitical-analysis.html">
+                <div class="section-card-copy">
+                  <h3>Sahel security coordination is becoming more formalized</h3>
+                  <p>Jul 19, 2026 - Analysis - Energy Security</p>
+                </div>
+                <div class="section-card-photo">Photo</div>
+              </a>
+              <a class="section-card" href="geopolitical-analysis.html">
+                <div class="section-card-copy">
+                  <h3>Food security is again driving Horn of Africa diplomacy</h3>
+                  <p>Jul 18, 2026 - Analysis - Security</p>
+                </div>
+                <div class="section-card-photo">Photo</div>
+              </a>
+              <a class="section-card" href="geopolitical-analysis.html">
+                <div class="section-card-copy">
+                  <h3>Nigeria's fuel policy remains a domestic stability variable</h3>
+                  <p>Jul 17, 2026 - Analysis - Defense</p>
+                </div>
+                <div class="section-card-photo">Photo</div>
+              </a>
+              <a class="section-card extra-item more-batch-1" href="geopolitical-analysis.html">
+                <div class="section-card-copy">
+                  <h3>Congo diplomacy is tied to regional mineral and militia networks</h3>
+                  <p>Jul 16, 2026 - Analysis - Security</p>
+                </div>
+                <div class="section-card-photo">Photo</div>
+              </a>
+              <a class="section-card extra-item more-batch-1" href="geopolitical-analysis.html">
+                <div class="section-card-copy">
+                  <h3>Critical minerals are changing Africa's external bargaining power</h3>
+                  <p>Jul 15, 2026 - Analysis - Economic Security</p>
+                </div>
+                <div class="section-card-photo">Photo</div>
+              </a>
+              <a class="section-card more-batch more-batch-2" href="geopolitical-analysis.html">
+                <div class="section-card-copy">
+                  <h3>Germany's civil-defense planning points to a broader resilience turn</h3>
+                  <p>Jul 14, 2026 - Analysis - Resilience</p>
+                </div>
+                <div class="section-card-photo">Photo</div>
+              </a>
+              <a class="section-card more-batch more-batch-2" href="geopolitical-analysis.html">
+                <div class="section-card-copy">
+                  <h3>Sanctions enforcement is becoming Europe's quiet strategic lever</h3>
+                  <p>Jul 13, 2026 - Analysis - Economic Security</p>
+                </div>
+                <div class="section-card-photo">Photo</div>
+              </a>
+            </div>
+          </section>
+        </div>
+
+        <div class="view-more-wrap">
+          <button class="view-more-button" type="button" id="viewMoreButton">View More</button>
+        </div>
+      </main>
+
+      <aside class="right-rail" aria-label="Tools and analysis">
+        <form class="search-box" role="search">
+          <input type="search" aria-label="Search" placeholder="Search">
+        </form>
+
+        <section class="rail-panel">
+          <h2><a href="analysis-section.html">Last analysis</a></h2>
+          <div class="analysis-list">
+            <a class="analysis-link" href="geopolitical-analysis.html"><strong>Sudan mediation is narrowing around humanitarian access</strong><time datetime="2026-07-21">Jul 21, 2026</time></a>
+            <a class="analysis-link" href="geopolitical-analysis.html"><strong>Gulf risk premiums are becoming a policy signal</strong><time datetime="2026-07-20">Jul 20, 2026</time></a>
+            <a class="analysis-link" href="geopolitical-analysis.html"><strong>Sahel security coordination is becoming more formalized</strong><time datetime="2026-07-19">Jul 19, 2026</time></a>
+          </div>
+        </section>
+
+        <section class="rail-panel">
+          <h2>AI assistant</h2>
+          <p>Ask for country briefs, conflict timelines, actor maps, or source summaries.</p>
+        </section>
+
+        <section class="rail-panel">
+          <h2>Op-ed?</h2>
+          <p>Other items: podcasts, long reads, interviews</p>
+        </section>
+
+        <section class="rail-panel">
+          <h2>Economic, financial or political indicators / barometers</h2>
+          <div class="metric"><span>Oil risk</span><strong class="up">+2.4</strong></div>
+          <div class="metric"><span>Food security</span><strong class="down">-0.8</strong></div>
+          <div class="metric"><span>Migration pressure</span><strong class="up">+1.1</strong></div>
+        </section>
+      </aside>
+    </div>
+  </div>
+  <script>
+    const viewMoreButton = document.getElementById("viewMoreButton");
+    let visibleBatch = 0;
+
+    viewMoreButton.addEventListener("click", () => {
+      visibleBatch += 1;
+      document.querySelectorAll(`.more-batch-${visibleBatch}`).forEach((item) => {
+        item.style.display = "grid";
+      });
+      if (visibleBatch >= 2) {
+        viewMoreButton.textContent = "All items loaded";
+        viewMoreButton.disabled = true;
+      }
+    });
+  </script>
+</body>
+</html>
